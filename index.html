@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音乐分类展示板 - 稳定图片版</title>
+    <title>音乐分类展示板 - 智能搜索版</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -154,7 +154,7 @@
         
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
             margin-bottom: 40px;
         }
@@ -268,6 +268,29 @@
             background: #d43a55;
         }
         
+        .search-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .search-tag {
+            background: rgba(76, 201, 240, 0.2);
+            color: #4cc9f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+        
+        .search-tag:hover {
+            background: rgba(76, 201, 240, 0.3);
+            transform: translateY(-2px);
+        }
+        
         .poster-display {
             flex: 1;
             min-height: 250px;
@@ -278,7 +301,6 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            margin-bottom: 10px;
         }
         
         .poster-placeholder {
@@ -295,53 +317,22 @@
         }
         
         .poster-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+            max-width: 100%;
+            max-height: 280px;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-            max-height: 250px;
         }
         
-        .poster-img:hover {
-            transform: scale(1.02);
-        }
-        
-        /* 增大加粗的歌曲/专辑/乐队名字体 */
         .music-info {
-            margin-top: 5px;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--light-color);
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #c0c0e0;
             text-align: center;
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-            padding: 10px 0;
-            border-radius: 8px;
-            background: linear-gradient(90deg, rgba(233, 69, 96, 0.1), rgba(76, 201, 240, 0.1));
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
         }
         
-        .music-info:hover {
-            background: linear-gradient(90deg, rgba(233, 69, 96, 0.15), rgba(76, 201, 240, 0.15));
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        .album-info {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #a0a0c0;
-            margin-top: 5px;
-            text-align: center;
-            font-style: italic;
-        }
-        
-        .artist-info {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #4cc9f0;
+        .tag-info {
+            font-size: 0.8rem;
+            color: #8888aa;
             margin-top: 5px;
             text-align: center;
         }
@@ -355,10 +346,10 @@
         .history-item {
             display: inline-block;
             background: rgba(0, 0, 0, 0.3);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 12px;
             margin: 0 5px 5px 0;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -403,18 +394,6 @@
                 padding: 12px 20px;
                 font-size: 1rem;
             }
-            
-            .music-info {
-                font-size: 1.2rem;
-            }
-            
-            .album-info {
-                font-size: 1rem;
-            }
-            
-            .artist-info {
-                font-size: 1.1rem;
-            }
         }
         
         @media (max-width: 480px) {
@@ -424,18 +403,6 @@
             
             body {
                 padding: 10px;
-            }
-            
-            .music-info {
-                font-size: 1.1rem;
-            }
-            
-            .album-info {
-                font-size: 0.95rem;
-            }
-            
-            .artist-info {
-                font-size: 1rem;
             }
         }
         
@@ -561,7 +528,6 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 15px;
-            justify-content: center;
         }
         
         .suggestion-btn {
@@ -579,26 +545,13 @@
             background: rgba(139, 92, 246, 0.3);
             transform: translateY(-2px);
         }
-        
-        /* 修复图片加载样式 */
-        .poster-fallback {
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(45deg, var(--accent-color), var(--highlight-color));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
     </style>
 </head>
 <body>
     <div class="container" id="exportContainer">
         <header>
             <h1><i class="fas fa-music"></i> 音乐分类展示板</h1>
-            <p class="subtitle">修复图片显示问题 - 所有专辑封面100%可显示</p>
+            <p class="subtitle">探索20种音乐分类，搜索乐队或歌曲，自动显示对应的海报和专辑封面</p>
             
             <div class="control-panel">
                 <div>
@@ -607,6 +560,9 @@
                 </div>
                 
                 <div class="control-buttons">
+                    <button class="btn" onclick="exportCategories()">
+                        <i class="fas fa-download"></i> 导出配置
+                    </button>
                     <button class="btn btn-secondary" onclick="importCategories()">
                         <i class="fas fa-upload"></i> 导入配置
                     </button>
@@ -623,14 +579,14 @@
             </div>
             
             <div class="search-suggestions" id="quickSearch" style="display: none; margin-top: 15px;">
-                <button class="suggestion-btn" onclick="quickSearch('Coldplay')">Coldplay</button>
+                <button class="suggestion-btn" onclick="quickSearch('周杰伦')">周杰伦</button>
                 <button class="suggestion-btn" onclick="quickSearch('The Beatles')">The Beatles</button>
                 <button class="suggestion-btn" onclick="quickSearch('Taylor Swift')">Taylor Swift</button>
-                <button class="suggestion-btn" onclick="quickSearch('周杰伦')">周杰伦</button>
+                <button class="suggestion-btn" onclick="quickSearch('Coldplay')">Coldplay</button>
                 <button class="suggestion-btn" onclick="quickSearch('Queen')">Queen</button>
-                <button class="suggestion-btn" onclick="quickSearch('Nirvana')">Nirvana</button>
                 <button class="suggestion-btn" onclick="quickSearch('五月天')">五月天</button>
-                <button class="suggestion-btn" onclick="quickSearch('Radiohead')">Radiohead</button>
+                <button class="suggestion-btn" onclick="quickSearch('Maroon 5')">Maroon 5</button>
+                <button class="suggestion-btn" onclick="quickSearch('林俊杰')">林俊杰</button>
             </div>
         </header>
         
@@ -646,8 +602,8 @@
         </div>
         
         <footer>
-            <p>✅ 图片显示已修复 - 使用稳定CDN链接保证100%显示</p>
-            <p>© 2023 音乐探索者 | 修复图片显示版本</p>
+            <p>搜索乐队或歌曲自动显示海报和专辑封面，支持编辑标题、导出JPG图片</p>
+            <p>© 2023 音乐探索者 | 智能搜索版本</p>
         </footer>
     </div>
 
@@ -710,33 +666,187 @@
         </div>
     </div>
 
+    <!-- 快速搜索模态框 -->
+    <div class="modal" id="quickSearchModal">
+        <div class="modal-content">
+            <h3><i class="fas fa-bolt"></i> 快速搜索</h3>
+            <p>选择一个分类进行快速搜索：</p>
+            
+            <div style="margin-top: 15px; max-height: 300px; overflow-y: auto;">
+                <div id="categoryList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <input type="text" id="quickSearchInput" placeholder="输入乐队或歌曲名" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); color: white; border: 1px solid #8b5cf6; border-radius: 6px;">
+                <button class="btn btn-search" onclick="performQuickSearch()" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-search"></i> 搜索
+                </button>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('quickSearchModal')">
+                    <i class="fas fa-times"></i> 关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // =============== 修复的音乐数据库 ===============
-        // 所有图片使用100%可访问的CDN链接
-        
-        // 默认分类数据
+        // 默认音乐分类数据（移除了example行）
         const defaultCategories = [
-            { id: 1, title: "入坑曲", icon: "fas fa-door-open" },
-            { id: 2, title: "最想安利", icon: "fas fa-share-alt" },
-            { id: 3, title: "百听不厌", icon: "fas fa-redo" },
-            { id: 4, title: "最震撼", icon: "fas fa-bolt" },
-            { id: 5, title: "最过誉", icon: "fas fa-meh" },
-            { id: 6, title: "最冷门", icon: "fas fa-search" },
-            { id: 7, title: "勾起回忆", icon: "fas fa-history" },
-            { id: 8, title: "最喜欢", icon: "fas fa-heart" },
-            { id: 9, title: "最复杂", icon: "fas fa-brain" },
-            { id: 10, title: "乐器最优秀", icon: "fas fa-guitar" },
-            { id: 11, title: "旋律最抓耳", icon: "fas fa-music" },
-            { id: 12, title: "最爱作者", icon: "fas fa-user-edit" },
-            { id: 13, title: "最爱乐队", icon: "fas fa-users" },
-            { id: 14, title: "影响最大", icon: "fas fa-star" },
-            { id: 15, title: "最商业化", icon: "fas fa-dollar-sign" },
-            { id: 16, title: "最听不懂", icon: "fas fa-question-circle" },
-            { id: 17, title: "最古早", icon: "fas fa-hourglass-start" },
-            { id: 18, title: "听了想抖腿", icon: "fas fa-running" },
-            { id: 19, title: "最浪漫", icon: "fas fa-heartbeat" },
-            { id: 20, title: "最史诗", icon: "fas fa-mountain" }
+            { id: 1, title: "入坑曲", icon: "fas fa-door-open", searchTags: [] },
+            { id: 2, title: "最想安利", icon: "fas fa-share-alt", searchTags: [] },
+            { id: 3, title: "百听不厌", icon: "fas fa-redo", searchTags: [] },
+            { id: 4, title: "最震撼", icon: "fas fa-bolt", searchTags: [] },
+            { id: 5, title: "最过誉", icon: "fas fa-meh", searchTags: [] },
+            { id: 6, title: "最冷门", icon: "fas fa-search", searchTags: [] },
+            { id: 7, title: "勾起回忆", icon: "fas fa-history", searchTags: [] },
+            { id: 8, title: "最喜欢", icon: "fas fa-heart", searchTags: [] },
+            { id: 9, title: "最复杂", icon: "fas fa-brain", searchTags: [] },
+            { id: 10, title: "乐器最优秀", icon: "fas fa-guitar", searchTags: [] },
+            { id: 11, title: "旋律最抓耳", icon: "fas fa-music", searchTags: [] },
+            { id: 12, title: "最爱作者", icon: "fas fa-user-edit", searchTags: [] },
+            { id: 13, title: "最爱乐队", icon: "fas fa-users", searchTags: [] },
+            { id: 14, title: "影响最大", icon: "fas fa-star", searchTags: [] },
+            { id: 15, title: "最商业化", icon: "fas fa-dollar-sign", searchTags: [] },
+            { id: 16, title: "最听不懂", icon: "fas fa-question-circle", searchTags: [] },
+            { id: 17, title: "最古早", icon: "fas fa-hourglass-start", searchTags: [] },
+            { id: 18, title: "听了想抖腿", icon: "fas fa-running", searchTags: [] },
+            { id: 19, title: "最浪漫", icon: "fas fa-heartbeat", searchTags: [] },
+            { id: 20, title: "最史诗", icon: "fas fa-mountain", searchTags: [] }
         ];
+
+        // 扩展音乐数据库 - 专注海报和专辑封面
+        const musicDatabase = {
+            // 华语音乐
+            "周杰伦": { 
+                name: "周杰伦", 
+                tags: ["华语流行", "R&B", "说唱"],
+                poster: "https://upload.wikimedia.org/wikipedia/zh/3/3b/%E5%8F%B6%E6%83%A0%E7%BE%8E.jpg" 
+            },
+            "五月天": { 
+                name: "五月天", 
+                tags: ["摇滚", "华语乐队", "流行摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/zh/6/6f/Mayday_-_Mayday_%26_Mayday.jpg" 
+            },
+            "林俊杰": { 
+                name: "林俊杰", 
+                tags: ["华语流行", "R&B"],
+                poster: "https://upload.wikimedia.org/wikipedia/zh/2/2b/JJ_Lin_-_Drifter.jpg" 
+            },
+            "陈奕迅": { 
+                name: "陈奕迅", 
+                tags: ["粤语流行", "华语流行"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/4/42/Easonchanu87.jpg" 
+            },
+            "邓紫棋": { 
+                name: "邓紫棋", 
+                tags: ["华语流行", "R&B"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/3/32/Glorious_Contempt.jpg" 
+            },
+            
+            // 国际乐队/歌手
+            "the beatles": { 
+                name: "The Beatles", 
+                tags: ["摇滚", "经典摇滚", "英国摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/4/4d/The_Beatles_-_Abbey_Road.jpg" 
+            },
+            "queen": { 
+                name: "Queen", 
+                tags: ["摇滚", "华丽摇滚", "经典摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/4/4d/Queen_The_Miracle.png" 
+            },
+            "led zeppelin": { 
+                name: "Led Zeppelin", 
+                tags: ["硬摇滚", "布鲁斯摇滚", "经典摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/2/26/Led_Zeppelin_-_Led_Zeppelin_IV.jpg" 
+            },
+            "pink floyd": { 
+                name: "Pink Floyd", 
+                tags: ["前卫摇滚", "迷幻摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/3/3c/Wish_You_Were_Here_%28Pink_Floyd_album_cover%29.png" 
+            },
+            "nirvana": { 
+                name: "Nirvana", 
+                tags: ["垃圾摇滚", "另类摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/b/b7/NirvanaNevermindalbumcover.jpg" 
+            },
+            "radiohead": { 
+                name: "Radiohead", 
+                tags: ["另类摇滚", "实验摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/b/ba/Radioheadokcomputer.png" 
+            },
+            
+            // 流行歌手
+            "taylor swift": { 
+                name: "Taylor Swift", 
+                tags: ["流行", "乡村流行", "合成器流行"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/c/cd/Taylor_Swift_-_1989_%28Taylor%27s_Version%29.png" 
+            },
+            "ed sheeran": { 
+                name: "Ed Sheeran", 
+                tags: ["流行", "民谣流行"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/4/45/Divide_cover.png" 
+            },
+            "coldplay": { 
+                name: "Coldplay", 
+                tags: ["另类摇滚", "流行摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/c/c0/Coldplay_-_Viva_la_Vida_or_Death_and_All_His_Friends.png" 
+            },
+            "maroon 5": { 
+                name: "Maroon 5", 
+                tags: ["流行摇滚", "放克摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/6/6a/Maroon_5_-_V_%28Official_Album_Cover%29.png" 
+            },
+            
+            // 经典与独立
+            "david bowie": { 
+                name: "David Bowie", 
+                tags: ["艺术摇滚", "华丽摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/4/4c/David_Bowie_-_Heroes.png" 
+            },
+            "björk": { 
+                name: "Björk", 
+                tags: ["实验", "电子", "艺术流行"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/7/7d/Homogenic.jpg" 
+            },
+            "tool": { 
+                name: "Tool", 
+                tags: ["前卫金属", "另类金属"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/4/4f/Tool_-_Lateralus.jpg" 
+            },
+            
+            // 电子音乐
+            "daft punk": { 
+                name: "Daft Punk", 
+                tags: ["电子", "浩室", "法国浩室"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/2/27/Daft_Punk_Random_Access_Memories.png" 
+            },
+            
+            // 电影原声
+            "hans zimmer": { 
+                name: "Hans Zimmer", 
+                tags: ["电影配乐", "古典", "电子"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/5/5c/Inception_%28soundtrack%29_cover_art.jpg" 
+            },
+            
+            // 搜索关键词扩展
+            "齐柏林飞艇": { 
+                name: "Led Zeppelin", 
+                tags: ["硬摇滚", "布鲁斯摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/2/26/Led_Zeppelin_-_Led_Zeppelin_IV.jpg" 
+            },
+            "披头士": { 
+                name: "The Beatles", 
+                tags: ["摇滚", "经典摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/4/4d/The_Beatles_-_Abbey_Road.jpg" 
+            },
+            "电台司令": { 
+                name: "Radiohead", 
+                tags: ["另类摇滚", "实验摇滚"],
+                poster: "https://upload.wikimedia.org/wikipedia/en/b/ba/Radioheadokcomputer.png" 
+            }
+        };
 
         // 当前分类数据
         let categories = JSON.parse(JSON.stringify(defaultCategories));
@@ -744,268 +854,16 @@
         // 导出图片质量设置
         let exportQuality = 0.8;
         
-        // ✅ 修复的音乐数据库 - 使用100%可访问的图片链接
-        const fixedMusicDatabase = {
-            // =============== 国际艺人 ===============
-            "coldplay": {
-                name: "Coldplay",
-                artist: "Coldplay",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/3a/85/98/3a8598ef-a865-4307-05ae-2e3e523390d7/190296882670.jpg/600x600bb.jpg"
-            },
-            "the beatles": {
-                name: "The Beatles",
-                artist: "The Beatles",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg"
-            },
-            "taylor swift": {
-                name: "Taylor Swift",
-                artist: "Taylor Swift",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/0d/57/82/0d578234-53e6-927a-6a6e-5eaf80cf7068/23UMGIM17144.rgb.jpg/600x600bb.jpg"
-            },
-            "queen": {
-                name: "Queen",
-                artist: "Queen",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/32/60/e6/3260e684-9c72-4b9f-1c80-f56a30cfa4b9/00602547259630.rgb.jpg/600x600bb.jpg"
-            },
-            "nirvana": {
-                name: "Nirvana",
-                artist: "Nirvana",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/88/96/61/88966198-951d-b8aa-cc05-21c9e3c5ac77/190296067956.jpg/600x600bb.jpg"
-            },
-            "radiohead": {
-                name: "Radiohead",
-                artist: "Radiohead",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/88/96/61/88966198-951d-b8aa-cc05-21c9e3c5ac77/190296067956.jpg/600x600bb.jpg"
-            },
-            "pink floyd": {
-                name: "Pink Floyd",
-                artist: "Pink Floyd",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/32/60/e6/3260e684-9c72-4b9f-1c80-f56a30cfa4b9/00602547259630.rgb.jpg/600x600bb.jpg"
-            },
-            "led zeppelin": {
-                name: "Led Zeppelin",
-                artist: "Led Zeppelin",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg"
-            },
-            "michael jackson": {
-                name: "Michael Jackson",
-                artist: "Michael Jackson",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg"
-            },
-            "the rolling stones": {
-                name: "The Rolling Stones",
-                artist: "The Rolling Stones",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg"
-            },
-            "david bowie": {
-                name: "David Bowie",
-                artist: "David Bowie",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg"
-            },
-            
-            // =============== 华语艺人 ===============
-            "周杰伦": {
-                name: "周杰伦",
-                artist: "周杰伦",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/03/68/f2/0368f22b-0a7c-c9bc-eb4d-2df3c81e3785/197188921974.jpg/600x600bb.jpg"
-            },
-            "五月天": {
-                name: "五月天",
-                artist: "五月天",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/cf/ea/67/cfea67c1-a5f7-1a8f-4333-3fbdd18e81c9/190296206714.jpg/600x600bb.jpg"
-            },
-            "林俊杰": {
-                name: "林俊杰",
-                artist: "林俊杰",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/a2/66/14/a2661497-2710-6291-bc20-fc87d5d564c5/196922470788_Cover.jpg/600x600bb.jpg"
-            },
-            "陈奕迅": {
-                name: "陈奕迅",
-                artist: "陈奕迅",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/4e/64/34/4e643423-6c8f-91e7-fb09-6f2b77d5fb6b/190296969870.jpg/600x600bb.jpg"
-            },
-            "邓紫棋": {
-                name: "邓紫棋",
-                artist: "邓紫棋",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/a2/66/14/a2661497-2710-6291-bc20-fc87d5d564c5/196922470788_Cover.jpg/600x600bb.jpg"
-            },
-            "王菲": {
-                name: "王菲",
-                artist: "王菲",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/a2/66/14/a2661497-2710-6291-bc20-fc87d5d564c5/196922470788_Cover.jpg/600x600bb.jpg"
-            },
-            "张学友": {
-                name: "张学友",
-                artist: "张学友",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/a2/66/14/a2661497-2710-6291-bc20-fc87d5d564c5/196922470788_Cover.jpg/600x600bb.jpg"
-            },
-            
-            // =============== 歌曲和专辑 ===============
-            "stairway to heaven": {
-                name: "Stairway to Heaven",
-                artist: "Led Zeppelin",
-                type: "song",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg"
-            },
-            "bohemian rhapsody": {
-                name: "Bohemian Rhapsody",
-                artist: "Queen",
-                type: "song",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/32/60/e6/3260e684-9c72-4b9f-1c80-f56a30cfa4b9/00602547259630.rgb.jpg/600x600bb.jpg"
-            },
-            "smells like teen spirit": {
-                name: "Smells Like Teen Spirit",
-                artist: "Nirvana",
-                type: "song",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/88/96/61/88966198-951d-b8aa-cc05-21c9e3c5ac77/190296067956.jpg/600x600bb.jpg"
-            },
-            "晴天": {
-                name: "晴天",
-                artist: "周杰伦",
-                type: "song",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/03/68/f2/0368f22b-0a7c-c9bc-eb4d-2df3c81e3785/197188921974.jpg/600x600bb.jpg"
-            },
-            "江南": {
-                name: "江南",
-                artist: "林俊杰",
-                type: "song",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/a2/66/14/a2661497-2710-6291-bc20-fc87d5d564c5/196922470788_Cover.jpg/600x600bb.jpg"
-            },
-            
-            // =============== 别名 ===============
-            "齐柏林飞艇": {
-                name: "Led Zeppelin",
-                artist: "Led Zeppelin",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg"
-            },
-            "披头士": {
-                name: "The Beatles",
-                artist: "The Beatles",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg"
-            },
-            "电台司令": {
-                name: "Radiohead",
-                artist: "Radiohead",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/88/96/61/88966198-951d-b8aa-cc05-21c9e3c5ac77/190296067956.jpg/600x600bb.jpg"
-            },
-            "jay chou": {
-                name: "周杰伦",
-                artist: "周杰伦",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/03/68/f2/0368f22b-0a7c-c9bc-eb4d-2df3c81e3785/197188921974.jpg/600x600bb.jpg"
-            },
-            "mayday": {
-                name: "五月天",
-                artist: "五月天",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/cf/ea/67/cfea67c1-a5f7-1a8f-4333-3fbdd18e81c9/190296206714.jpg/600x600bb.jpg"
-            },
-            "jj lin": {
-                name: "林俊杰",
-                artist: "林俊杰",
-                type: "artist",
-                poster: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/a2/66/14/a2661497-2710-6291-bc20-fc87d5d564c5/196922470788_Cover.jpg/600x600bb.jpg"
-            }
-        };
-
-        // 当前分类数据
-        categories = JSON.parse(JSON.stringify(defaultCategories));
-        
-        // 备用图片（100%可访问）
-        const fallbackImages = [
-            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI4MCIgZmlsbD0iIzBjOTdmZiIvPjxwYXRoIGQ9Ik04MCAxMjBoNDBtLTIwLTIwaDQwbS0yMC0yMGg0MCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=",
-            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIHJ4PSIyMCIgZmlsbD0iI2Y2MCIvPjxwYXRoIGQ9Ik02MCA4MGg4MHY0MEg2MFY4MHpNNTAgMTQwaDEwMHYyMEg1MHYtMjB6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg=="
-        ];
+        // 当前快速搜索的分类ID
+        let currentQuickSearchCategory = 1;
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             loadFromLocalStorage();
             renderCategories();
             initializeQuickSearch();
-            
-            // 立即测试图片显示
-            testImageLoading();
         });
 
-        // =============== 修复的搜索功能 ===============
-        
-        // 精确搜索函数 - 修复版
-        function fixedSearch(query) {
-            const queryLower = query.toLowerCase().trim();
-            console.log("搜索关键词:", queryLower);
-            
-            // 1. 精确匹配
-            if (fixedMusicDatabase[queryLower]) {
-                console.log("找到精确匹配:", fixedMusicDatabase[queryLower]);
-                return fixedMusicDatabase[queryLower];
-            }
-            
-            // 2. 部分匹配
-            for (const key in fixedMusicDatabase) {
-                if (queryLower.includes(key) || key.includes(queryLower)) {
-                    console.log("找到部分匹配:", key);
-                    return fixedMusicDatabase[key];
-                }
-            }
-            
-            // 3. 返回备用数据
-            console.log("使用备用数据");
-            return {
-                name: query,
-                artist: "音乐",
-                type: "unknown",
-                poster: fallbackImages[0]
-            };
-        }
-        
-        // 测试图片加载
-        function testImageLoading() {
-            console.log("=== 图片加载测试开始 ===");
-            
-            // 测试几个关键图片
-            const testUrls = [
-                "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/3a/85/98/3a8598ef-a865-4307-05ae-2e3e523390d7/190296882670.jpg/600x600bb.jpg",
-                "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/72/ab/5372ab73-ec41-fc1e-672f-b44e36f74afd/190296675668.jpg/600x600bb.jpg",
-                fallbackImages[0]
-            ];
-            
-            testUrls.forEach((url, index) => {
-                const img = new Image();
-                img.onload = function() {
-                    console.log(`测试图片 ${index + 1} 加载成功:`, url.substring(0, 50) + "...");
-                };
-                img.onerror = function() {
-                    console.log(`测试图片 ${index + 1} 加载失败:`, url.substring(0, 50) + "...");
-                };
-                img.src = url;
-            });
-            
-            console.log("=== 图片加载测试结束 ===");
-        }
-
-        // =============== 界面渲染 ===============
-        
         // 渲染所有分类卡片
         function renderCategories() {
             const categoriesGrid = document.getElementById('categoriesGrid');
@@ -1015,6 +873,13 @@
                 const card = document.createElement('div');
                 card.className = 'category-card';
                 card.id = `category-${category.id}`;
+                
+                // 生成搜索标签HTML
+                const tagsHtml = category.searchTags && category.searchTags.length > 0 
+                    ? `<div class="search-tags">${category.searchTags.map(tag => 
+                        `<span class="search-tag">${tag}</span>`
+                      ).join('')}</div>`
+                    : '<div class="search-tags"></div>';
                 
                 card.innerHTML = `
                     <div class="category-header">
@@ -1036,11 +901,12 @@
                     
                     <div class="search-container">
                         <div class="search-box">
-                            <input type="text" id="search-${category.id}" placeholder="搜索乐队、专辑或歌曲...">
+                            <input type="text" id="search-${category.id}" placeholder="搜索乐队或歌曲...">
                             <button onclick="searchMusic(${category.id})">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
+                        ${tagsHtml}
                         
                         <div class="search-history" id="history-${category.id}"></div>
                     </div>
@@ -1048,13 +914,12 @@
                     <div class="poster-display" id="poster-${category.id}">
                         <div class="poster-placeholder">
                             <i class="fas fa-compact-disc"></i>
-                            <p>搜索显示音乐信息</p>
+                            <p>搜索乐队显示海报</p>
                         </div>
                     </div>
                     
                     <div class="music-info" id="info-${category.id}"></div>
-                    <div class="artist-info" id="artist-${category.id}"></div>
-                    <div class="album-info" id="album-${category.id}"></div>
+                    <div class="tag-info" id="tag-${category.id}"></div>
                 `;
                 
                 categoriesGrid.appendChild(card);
@@ -1067,30 +932,23 @@
                     }
                 });
             });
-            
-            // 初始化示例 - 使用setTimeout确保DOM已加载
-            setTimeout(() => {
-                searchMusic(1, 'Coldplay');
-                searchMusic(10, 'The Beatles');
-                searchMusic(13, '周杰伦');
-            }, 1000);
         }
 
-        // =============== 修复的搜索功能 ===============
+        // =============== 搜索功能 ===============
         
-        // 搜索音乐函数 - 修复版
+        // 搜索音乐函数
         function searchMusic(categoryId, searchTerm = null) {
             let searchInput;
             
             if (searchTerm) {
-                searchTerm = searchTerm.trim();
+                searchTerm = searchTerm.toLowerCase();
                 searchInput = document.getElementById(`search-${categoryId}`);
                 if (searchInput) {
                     searchInput.value = searchTerm;
                 }
             } else {
                 searchInput = document.getElementById(`search-${categoryId}`);
-                searchTerm = searchInput.value.trim();
+                searchTerm = searchInput.value.trim().toLowerCase();
             }
             
             if (!searchTerm) {
@@ -1100,100 +958,131 @@
             
             // 显示加载动画
             const posterDisplay = document.getElementById(`poster-${categoryId}`);
-            const infoDisplay = document.getElementById(`info-${categoryId}`);
-            const artistDisplay = document.getElementById(`artist-${categoryId}`);
-            const albumDisplay = document.getElementById(`album-${category.id}`);
-            
             posterDisplay.innerHTML = '<div class="loader"></div>';
             const loader = posterDisplay.querySelector('.loader');
             loader.style.display = 'block';
-            infoDisplay.textContent = '正在搜索...';
-            artistDisplay.textContent = '';
-            albumDisplay.textContent = '';
             
-            // 立即搜索，不使用延迟
-            const musicData = fixedSearch(searchTerm);
+            // 模拟API请求延迟
+            setTimeout(() => {
+                let found = false;
+                let foundData = null;
+                
+                // 在模拟数据库中查找
+                for (const key in musicDatabase) {
+                    if (searchTerm.includes(key) || key.includes(searchTerm) || 
+                        searchTerm === key || musicDatabase[key].name.toLowerCase().includes(searchTerm)) {
+                        foundData = musicDatabase[key];
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (found && foundData) {
+                    displayPoster(categoryId, foundData);
+                    addSearchTag(categoryId, foundData.name);
+                    updateHistory(categoryId, foundData.name);
+                } else {
+                    // 如果未找到，使用备用图片
+                    const fallbackPosters = [
+                        "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                        "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                        "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                    ];
+                    
+                    const randomPoster = fallbackPosters[Math.floor(Math.random() * fallbackPosters.length)];
+                    
+                    displayPoster(categoryId, {
+                        name: `搜索: ${searchTerm}`,
+                        tags: [],
+                        poster: randomPoster
+                    });
+                    
+                    addSearchTag(categoryId, searchTerm);
+                    updateHistory(categoryId, searchTerm);
+                }
+                
+                // 清空搜索框（如果不是预定义的搜索）
+                if (!searchTerm || searchInput) {
+                    searchInput.value = '';
+                }
+            }, 800);
+        }
+        
+        // 显示海报函数
+        function displayPoster(categoryId, musicData) {
+            const posterDisplay = document.getElementById(`poster-${categoryId}`);
+            const musicInfo = document.getElementById(`info-${categoryId}`);
+            const tagInfo = document.getElementById(`tag-${categoryId}`);
             
-            // 显示结果
-            displayPoster(categoryId, musicData);
+            posterDisplay.innerHTML = `
+                <img src="${musicData.poster}" alt="${musicData.name}" class="poster-img" 
+                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80';">
+            `;
             
-            // 更新信息显示
-            infoDisplay.textContent = musicData.name;
-            artistDisplay.textContent = `艺人: ${musicData.artist}`;
+            musicInfo.textContent = musicData.name;
             
-            if (musicData.type === 'artist') {
-                albumDisplay.textContent = '类型: 艺人';
-            } else if (musicData.type === 'song') {
-                albumDisplay.textContent = '类型: 歌曲';
-            } else if (musicData.type === 'album') {
-                albumDisplay.textContent = '类型: 专辑';
+            if (musicData.tags && musicData.tags.length > 0) {
+                tagInfo.innerHTML = `标签: ${musicData.tags.join(' · ')}`;
             } else {
-                albumDisplay.textContent = '搜索中...';
-            }
-            
-            updateHistory(categoryId, searchTerm);
-            
-            // 清空搜索框
-            if (!searchTerm || searchInput) {
-                searchInput.value = '';
+                tagInfo.innerHTML = '';
             }
         }
         
-        // 显示海报函数 - 修复版
-        function displayPoster(categoryId, musicData) {
-            const posterDisplay = document.getElementById(`poster-${categoryId}`);
+        // 添加搜索标签
+        function addSearchTag(categoryId, tagText) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return;
             
-            // 创建图片元素
-            const img = document.createElement('img');
-            img.className = 'poster-img';
-            img.alt = musicData.name;
-            img.src = musicData.poster;
+            if (!category.searchTags) {
+                category.searchTags = [];
+            }
             
-            // 图片加载成功
-            img.onload = function() {
-                console.log(`图片加载成功: ${musicData.name}`);
-                posterDisplay.innerHTML = '';
-                posterDisplay.appendChild(img);
-            };
-            
-            // 图片加载失败 - 使用备用图片
-            img.onerror = function() {
-                console.log(`图片加载失败: ${musicData.poster}`);
-                posterDisplay.innerHTML = `
-                    <div class="poster-fallback">
-                        <i class="fas fa-music"></i>
-                    </div>
-                `;
+            // 避免重复添加相同标签
+            if (!category.searchTags.includes(tagText)) {
+                category.searchTags.push(tagText);
                 
-                // 尝试加载备用图片
-                setTimeout(() => {
-                    const fallbackImg = document.createElement('img');
-                    fallbackImg.className = 'poster-img';
-                    fallbackImg.alt = musicData.name;
-                    fallbackImg.src = fallbackImages[0];
-                    fallbackImg.onload = function() {
-                        posterDisplay.innerHTML = '';
-                        posterDisplay.appendChild(fallbackImg);
-                    };
-                }, 100);
-            };
+                // 限制标签数量
+                if (category.searchTags.length > 5) {
+                    category.searchTags.shift();
+                }
+                
+                // 更新UI
+                updateSearchTags(categoryId);
+                
+                // 保存到localStorage
+                saveToLocalStorage();
+            }
+        }
+        
+        // 更新搜索标签显示
+        function updateSearchTags(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return;
             
-            // 清空并添加图片
-            posterDisplay.innerHTML = '';
-            posterDisplay.appendChild(img);
+            const tagsContainer = document.querySelector(`#category-${categoryId} .search-tags`);
+            if (!tagsContainer) return;
+            
+            tagsContainer.innerHTML = category.searchTags.map(tag => 
+                `<span class="search-tag" onclick="quickSearchTag(${categoryId}, '${tag}')">${tag}</span>`
+            ).join('');
+        }
+        
+        // 标签点击搜索
+        function quickSearchTag(categoryId, tag) {
+            document.getElementById(`search-${categoryId}`).value = tag;
+            searchMusic(categoryId, tag);
         }
         
         // =============== 快速搜索功能 ===============
         
         // 显示快速搜索面板
         function showQuickSearch() {
-            const quickSearch = document.getElementById('quickSearch');
-            quickSearch.style.display = quickSearch.style.display === 'flex' ? 'none' : 'flex';
+            document.getElementById('quickSearch').style.display = 'flex';
         }
         
         // 快速搜索
         function quickSearch(term) {
-            // 随机选择一个分类进行搜索
+            // 随机选择一个分类进行搜索（或可以改进为让用户选择）
             const randomCategoryId = Math.floor(Math.random() * categories.length) + 1;
             searchMusic(randomCategoryId, term);
             
@@ -1208,14 +1097,17 @@
                     element.style.boxShadow = '';
                 }, 2000);
             }
-            
-            // 隐藏快速搜索面板
-            document.getElementById('quickSearch').style.display = 'none';
         }
         
         // 初始化快速搜索
         function initializeQuickSearch() {
-            // 快速搜索面板已显示在页面中
+            // 预加载一些搜索示例
+            setTimeout(() => {
+                // 随机选择几个分类进行示例搜索
+                searchMusic(1, '周杰伦');
+                searchMusic(10, 'Led Zeppelin');
+                searchMusic(13, 'The Beatles');
+            }, 1000);
         }
         
         // =============== 其他功能 ===============
@@ -1318,7 +1210,7 @@
             historyItem.textContent = searchTerm.length > 15 ? searchTerm.substring(0, 15) + '...' : searchTerm;
             historyItem.onclick = function() {
                 document.getElementById(`search-${categoryId}`).value = searchTerm;
-                searchMusic(categoryId, searchTerm);
+                searchMusic(categoryId);
             };
             
             historyContainer.appendChild(historyItem);
@@ -1452,6 +1344,15 @@
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+        }
+
+        function resetToDefault() {
+            if (confirm('确定要恢复默认分类配置吗？您的自定义标题将会丢失。')) {
+                categories = JSON.parse(JSON.stringify(defaultCategories));
+                renderCategories();
+                localStorage.removeItem('musicBoardCategories');
+                alert('已恢复默认配置！');
+            }
         }
 
         function saveToLocalStorage() {
